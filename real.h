@@ -19,13 +19,11 @@ protected:
 
 public:
 
-    real()
-    {
+    real() {
         mpfr_init2(m_val, REAL_PRECISION);
     }
 
-    ~real()
-    {
+    ~real() {
         mpfr_clear(m_val);
     }
 
@@ -490,6 +488,39 @@ public:
         mpfr_clear(tmp);
 
         return val;
+    }
+
+    real& operator=(const real& other) {
+        mpfr_set(m_val, other.m_val, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const long double& other) {
+        mpfr_set_ld(m_val, other, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const double& other) {
+        mpfr_set_d(m_val, other, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const float& other) {
+        mpfr_set_flt(m_val, other, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const unsigned long& other) {
+        mpfr_set_ui(m_val, other, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const long& other) {
+        mpfr_set_si(m_val, other, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const unsigned int& other) {
+        mpfr_set_ui(m_val, other, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const int& other) {
+        mpfr_set_ui(m_val, other, MPFR_RNDN);
+        return *this;
     }
 
     void operator+=(const real& other) {
