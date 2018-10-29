@@ -12,10 +12,16 @@ struct real
 protected:
     mpfr_t m_val;
 
-    void mpfr_from_str(std::string str, mpfr_t& result) const
+    void mpfr_from_str(const std::string str, mpfr_t& result) const
     {
         mpfr_init2(result, REAL_PRECISION);
         mpfr_set_str(result, str.c_str(), /*base*/10, MPFR_RNDN);
+    }
+
+    void mpfr_from_str(const char* str, mpfr_t& result) const
+    {
+        mpfr_init2(result, REAL_PRECISION);
+        mpfr_set_str(result, str, /*base*/10, MPFR_RNDN);
     }
 
     void text(std::string message, const mpfr_t& val) const
@@ -26,6 +32,11 @@ protected:
     }
 
 public:
+
+    void text(std::string message)
+    {
+        text(message, m_val);
+    }
 
     real() {
         mpfr_init2(m_val, REAL_PRECISION);
@@ -82,6 +93,12 @@ public:
     {
         mpfr_init2(m_val, REAL_PRECISION);
         mpfr_set_str(m_val, val.c_str(), /*base*/10, MPFR_RNDN);
+    }
+
+    real(const char* val)
+    {
+        mpfr_init2(m_val, REAL_PRECISION);
+        mpfr_set_str(m_val, val, /*base*/10, MPFR_RNDN);
     }
 
     ~real() {
@@ -218,6 +235,18 @@ public:
 
         return val;
     }
+    real operator+(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_add(tmp, m_val, tmp, MPFR_RNDN);
+
+        real val;
+        mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+
+        return val;
+    }
 
     real operator-(const real& other) {
         mpfr_t tmp;
@@ -323,6 +352,18 @@ public:
         return val;
     }
     real operator-(const std::string& other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_sub(tmp, m_val, tmp, MPFR_RNDN);
+
+        real val;
+        mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+
+        return val;
+    }
+    real operator-(const char* other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
         mpfr_sub(tmp, m_val, tmp, MPFR_RNDN);
@@ -450,6 +491,18 @@ public:
 
         return val;
     }
+    real operator*(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_mul(tmp, m_val, tmp, MPFR_RNDN);
+
+        real val;
+        mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+
+        return val;
+    }
 
     real operator/(const real& other) {
         mpfr_t tmp;
@@ -557,7 +610,19 @@ public:
     real operator/(const std::string& other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
-        mpfr_add(tmp, m_val, tmp, MPFR_RNDN);
+        mpfr_div(tmp, m_val, tmp, MPFR_RNDN);
+
+        real val;
+        mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+
+        return val;
+    }
+    real operator/(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_div(tmp, m_val, tmp, MPFR_RNDN);
 
         real val;
         mpfr_set(val.m_val, tmp, MPFR_RNDN);
@@ -601,6 +666,10 @@ public:
     }
     real& operator=(const std::string& other) {
         mpfr_set_str(m_val, other.c_str(), /*base*/10, MPFR_RNDN);
+        return *this;
+    }
+    real& operator=(const char* other) {
+        mpfr_set_str(m_val, other, /*base*/10, MPFR_RNDN);
         return *this;
     }
 
@@ -664,6 +733,13 @@ public:
         mpfr_clear(tmp);
     }
     void operator+=(const std::string& other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_add(m_val, m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+    }
+    void operator+=(const char* other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
         mpfr_add(m_val, m_val, tmp, MPFR_RNDN);
@@ -737,6 +813,13 @@ public:
 
         mpfr_clear(tmp);
     }
+    void operator-=(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_sub(m_val, m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+    }
 
     void operator*=(const real& other) {
         mpfr_mul(m_val, m_val, other.m_val, MPFR_RNDN);
@@ -798,6 +881,13 @@ public:
         mpfr_clear(tmp);
     }
     void operator*=(const std::string& other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_mul(m_val, m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+    }
+    void operator*=(const char* other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
         mpfr_mul(m_val, m_val, tmp, MPFR_RNDN);
@@ -871,6 +961,13 @@ public:
 
         mpfr_clear(tmp);
     }
+    void operator/=(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        mpfr_div(m_val, m_val, tmp, MPFR_RNDN);
+
+        mpfr_clear(tmp);
+    }
 
     bool operator==(const real& other) {
         int compare = mpfr_cmp(m_val, other.m_val);
@@ -905,6 +1002,13 @@ public:
         return compare == 0;
     }
     bool operator==(const std::string& other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        int compare = mpfr_cmp(m_val, tmp);
+        mpfr_clear(tmp);
+        return compare == 0;
+    }
+    bool operator==(const char* other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
         int compare = mpfr_cmp(m_val, tmp);
@@ -951,6 +1055,13 @@ public:
         mpfr_clear(tmp);
         return compare != 0;
     }
+    bool operator!=(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        int compare = mpfr_cmp(m_val, tmp);
+        mpfr_clear(tmp);
+        return compare != 0;
+    }
 
     bool operator<(const real& other) {
         int compare = mpfr_cmp(m_val, other.m_val);
@@ -985,6 +1096,13 @@ public:
         return compare < 0;
     }
     bool operator<(const std::string& other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        int compare = mpfr_cmp(m_val, tmp);
+        mpfr_clear(tmp);
+        return compare < 0;
+    }
+    bool operator<(const char* other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
         int compare = mpfr_cmp(m_val, tmp);
@@ -1031,6 +1149,13 @@ public:
         mpfr_clear(tmp);
         return compare <= 0;
     }
+    bool operator<=(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        int compare = mpfr_cmp(m_val, tmp);
+        mpfr_clear(tmp);
+        return compare <= 0;
+    }
 
     bool operator>(const real& other) {
         int compare = mpfr_cmp(m_val, other.m_val);
@@ -1071,6 +1196,13 @@ public:
         mpfr_clear(tmp);
         return compare > 0;
     }
+    bool operator>(const char* other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        int compare = mpfr_cmp(m_val, tmp);
+        mpfr_clear(tmp);
+        return compare > 0;
+    }
 
     bool operator>=(const real& other) {
         int compare = mpfr_cmp(m_val, other.m_val);
@@ -1105,6 +1237,13 @@ public:
         return compare >= 0;
     }
     bool operator>=(const std::string& other) {
+        mpfr_t tmp;
+        mpfr_from_str(other, tmp);
+        int compare = mpfr_cmp(m_val, tmp);
+        mpfr_clear(tmp);
+        return compare >= 0;
+    }
+    bool operator>=(const char* other) {
         mpfr_t tmp;
         mpfr_from_str(other, tmp);
         int compare = mpfr_cmp(m_val, tmp);
