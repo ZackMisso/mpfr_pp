@@ -10,22 +10,22 @@ namespace mpfr_pp
 
 #define REAL_PRECISION 512
 
+static void mpfr_from_str(const std::string str, mpfr_t& result)
+{
+    mpfr_init2(result, REAL_PRECISION);
+    mpfr_set_str(result, str.c_str(), /*base*/10, MPFR_RNDN);
+}
+
+static void mpfr_from_str(const char* str, mpfr_t& result)
+{
+    mpfr_init2(result, REAL_PRECISION);
+    mpfr_set_str(result, str, /*base*/10, MPFR_RNDN);
+}
+
 struct real
 {
 protected:
     mpfr_t m_val;
-
-    void mpfr_from_str(const std::string str, mpfr_t& result) const
-    {
-        mpfr_init2(result, REAL_PRECISION);
-        mpfr_set_str(result, str.c_str(), /*base*/10, MPFR_RNDN);
-    }
-
-    void mpfr_from_str(const char* str, mpfr_t& result) const
-    {
-        mpfr_init2(result, REAL_PRECISION);
-        mpfr_set_str(result, str, /*base*/10, MPFR_RNDN);
-    }
 
     void text(std::string message, const mpfr_t& val) const
     {
@@ -122,6 +122,17 @@ public:
         mpfr_sub(m_val, m_val, one, MPFR_RNDN);
         mpfr_clear(one);
     }
+
+    // supported operations with:
+    // real
+    // long double
+    // double
+    // float
+    // unsigned long
+    // long
+    // unsigned int
+    // int
+    // string
 
     real operator+(const real& other) {
         mpfr_t tmp;
@@ -378,7 +389,6 @@ public:
 
         return val;
     }
-
     real operator*(const real& other) {
         mpfr_t tmp;
         mpfr_init2(tmp, REAL_PRECISION);
@@ -1275,6 +1285,1104 @@ public:
     operator int() const {
         return (int)mpfr_get_si(m_val, MPFR_RNDN);
     }
+
+    // friend methods
+    friend real operator+(const real& one, const real& two);
+    friend real operator+(const real& one, const long double& two);
+    friend real operator+(const long double& two, const real& one);
+    friend real operator+(const real& one, const double& two);
+    friend real operator+(const double& two, const real& one);
+    friend real operator+(const real& one, const float& two);
+    friend real operator+(const float& two, const real& one);
+    friend real operator+(const real& one, const unsigned long& two);
+    friend real operator+(const unsigned long& two, const real& one);
+    friend real operator+(const real& one, const long& two);
+    friend real operator+(const long& two, const real& one);
+    friend real operator+(const real& one, const unsigned int& two);
+    friend real operator+(const unsigned int& two, const real& one);
+    friend real operator+(const real& one, const int& two);
+    friend real operator+(const int& two, const real& one);
+    friend real operator+(const real& one, const std::string& two);
+    friend real operator+(const std::string& two, const real& one);
+
+    friend real operator-(const real& one, const real& two);
+    friend real operator-(const real& one, const long double& two);
+    friend real operator-(const long double& two, const real& one);
+    friend real operator-(const real& one, const double& two);
+    friend real operator-(const double& two, const real& one);
+    friend real operator-(const real& one, const float& two);
+    friend real operator-(const float& two, const real& one);
+    friend real operator-(const real& one, const unsigned long& two);
+    friend real operator-(const unsigned long& two, const real& one);
+    friend real operator-(const real& one, const long& two);
+    friend real operator-(const long& two, const real& one);
+    friend real operator-(const real& one, const unsigned int& two);
+    friend real operator-(const unsigned int& two, const real& one);
+    friend real operator-(const real& one, const int& two);
+    friend real operator-(const int& two, const real& one);
+    friend real operator-(const real& one, const std::string& two);
+    friend real operator-(const std::string& two, const real& one);
+
+    friend real operator*(const real& one, const real& two);
+    friend real operator*(const real& one, const long double& two);
+    friend real operator*(const long double& two, const real& one);
+    friend real operator*(const real& one, const double& two);
+    friend real operator*(const double& two, const real& one);
+    friend real operator*(const real& one, const float& two);
+    friend real operator*(const float& two, const real& one);
+    friend real operator*(const real& one, const unsigned long& two);
+    friend real operator*(const unsigned long& two, const real& one);
+    friend real operator*(const real& one, const long& two);
+    friend real operator*(const long& two, const real& one);
+    friend real operator*(const real& one, const unsigned int& two);
+    friend real operator*(const unsigned int& two, const real& one);
+    friend real operator*(const real& one, const int& two);
+    friend real operator*(const int& two, const real& one);
+    friend real operator*(const real& one, const std::string& two);
+    friend real operator*(const std::string& two, const real& one);
+
+    friend real operator/(const real& one, const real& two);
+    friend real operator/(const real& one, const long double& two);
+    friend real operator/(const long double& two, const real& one);
+    friend real operator/(const real& one, const double& two);
+    friend real operator/(const double& two, const real& one);
+    friend real operator/(const real& one, const float& two);
+    friend real operator/(const float& two, const real& one);
+    friend real operator/(const real& one, const unsigned long& two);
+    friend real operator/(const unsigned long& two, const real& one);
+    friend real operator/(const real& one, const long& two);
+    friend real operator/(const long& two, const real& one);
+    friend real operator/(const real& one, const unsigned int& two);
+    friend real operator/(const unsigned int& two, const real& one);
+    friend real operator/(const real& one, const int& two);
+    friend real operator/(const int& two, const real& one);
+    friend real operator/(const real& one, const std::string& two);
+    friend real operator/(const std::string& two, const real& one);
 };
+
+// supported operations with:
+// real
+// long double
+// double
+// float
+// unsigned long
+// long
+// unsigned int
+// int
+// string
+
+real operator+(const real& one, const real& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_add(tmp, one.m_val, two.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const long double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const long double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const float& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const float& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const unsigned long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const unsigned long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const unsigned int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const unsigned int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const real& one, const std::string& two)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator+(const std::string& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_add(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+///////
+
+real operator-(const real& one, const real& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_sub(tmp, one.m_val, two.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const long double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const long double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const float& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const float& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const unsigned long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const unsigned long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const unsigned int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const unsigned int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const real& one, const std::string& two)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_sub(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator-(const std::string& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_sub(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+///////
+
+real operator*(const real& one, const real& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_mul(tmp, one.m_val, two.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const long double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const long double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const float& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const float& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const unsigned long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const unsigned long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const unsigned int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const unsigned int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const real& one, const std::string& two)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_mul(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator*(const std::string& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_mul(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+///////
+
+real operator/(const real& one, const real& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_div(tmp, one.m_val, two.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const long double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const long double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ld(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const double& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const double& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_d(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const float& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const float& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_flt(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const unsigned long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const unsigned long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const long& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const long& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const unsigned int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const unsigned int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_ui(tmp, (unsigned long)two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const int& two)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const int& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_init2(tmp, REAL_PRECISION);
+    mpfr_set_si(tmp, (long)two, MPFR_RNDN);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const real& one, const std::string& two)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_div(tmp, one.m_val, tmp, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
+
+real operator/(const std::string& two, const real& one)
+{
+    mpfr_t tmp;
+    mpfr_from_str(two, tmp);
+    mpfr_div(tmp, tmp, one.m_val, MPFR_RNDN);
+
+    real val;
+    mpfr_set(val.m_val, tmp, MPFR_RNDN);
+
+    mpfr_clear(tmp);
+
+    return val;
+}
 
 }
