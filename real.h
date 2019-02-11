@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <string>
 
+namespace mpfr_pp
+{
+
 #define REAL_PRECISION 512
 
 struct real
@@ -1273,3 +1276,5 @@ public:
         return (int)mpfr_get_si(m_val, MPFR_RNDN);
     }
 };
+
+}

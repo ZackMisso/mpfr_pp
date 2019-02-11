@@ -2,6 +2,8 @@
 #include <vector>
 #include "real.h"
 
+using namespace mpfr_pp;
+
 bool initTest()
 {
     real one = 1;
@@ -115,9 +117,6 @@ bool mulTest()
 bool divTest()
 {
     real val = 1.0*1.0*2.0*2.0*3.0*3.0*4.0*4.0*5.0*5.0;
-    // val.text("woop");
-    // std::cout << "true val" << std::endl;
-    // std::cout << 1.0*1.0*2.0*2.0*3.0*3.0*4.0*4.0*5.0*5.0 << std::endl;
 
     double one = 1.0;
     std::string two = "002.000";
@@ -126,31 +125,54 @@ bool divTest()
     int five = 5;
 
     val /= one;
-    // val.text("one 1");
     val = val / one;
-    // val.text("one 2");
     val /= two;
-    // val.text("two 1");
     val = val / two;
-    // val.text("two 2");
     val /= three;
-    // val.text("three 1");
     val = val / three;
-    // val.text("three 2");
     val /= four;
-    // val.text("four 1");
     val = val / four;
-    // val.text("four 2");
     val /= five;
-    // val.text("five 1");
     val = val / five;
-    // val.text("five 2");
-
-    // val.text("woop");
 
     if (val == 1) return true;
 
     return false;
+}
+
+bool lessThanTests()
+{
+    // TODO
+
+    return true;
+}
+
+bool greaterThanTests()
+{
+    // TODO
+
+    return true;
+}
+
+bool lessThanOrEqTests()
+{
+    // TODO
+
+    return true;
+}
+
+bool greaterThanOrEqTests()
+{
+    // TODO
+
+    return true;
+}
+
+bool eqOrNotEqTests()
+{
+    // TODO
+
+    return true;
 }
 
 bool test()
@@ -175,6 +197,26 @@ bool test()
         std::cout << "Failed Div Test" << std::endl;
         return false;
     }
+    if (!lessThanTests()) {
+        std::cout << "Failed Less Than Test" << std::endl;
+        return false;
+    }
+    if (!greaterThanTests()) {
+        std::cout << "Failed Greater Than Test" << std::endl;
+        return false;
+    }
+    if (!lessThanOrEqTests()) {
+        std::cout << "Failed Less Than Or Equal To Test" << std::endl;
+        return false;
+    }
+    if (!greaterThanOrEqTests()) {
+        std::cout << "Failed Greater Than Or Equal To Test" << std::endl;
+        return false;
+    }
+    if (!eqOrNotEqTests()) {
+        std::cout << "Failed Equal Or Not Equal To Test" << std::endl;
+        return false;
+    }
 
     return true;
 }
@@ -184,30 +226,5 @@ int main(int argc, char* argv[])
     bool pass = test();
     if (pass) std::cout << "All Tests Passed" << std::endl;
 
-    // test();
-    // std::cout << "Hello World" << std::endl;
-    //
-    // std::vector<real> vec = std::vector<real>();
-    //
-    // int t = 5;
-    // real val;
-    // val = t;
-    // std::cout << "who" << std::endl;
-    // // val.test = 5;
-    // std::cout << "whop" << std::endl;
-    // vec.push_back(val);
-    // std::cout << "huh" << std::endl;
-    // double tmp = vec[0];
-    // // double tmp = val;
-    // std::cout << "plop" << std::endl;
-    //
-    // std::cout << "TMP: " << tmp << std::endl;
-    // t = 500;
-    // vec[0] = t;
-    // tmp = vec[0];
-    // std::cout << "TMP: " << tmp << std::endl;
-    // TODO: fix errors
-
-    // TODO
     return 0;
 }
