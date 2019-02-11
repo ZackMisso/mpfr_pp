@@ -105,7 +105,8 @@ public:
         mpfr_set_str(m_val, val, /*base*/10, MPFR_RNDN);
     }
 
-    ~real() {
+    ~real()
+    {
         mpfr_clear(m_val);
     }
 
@@ -1431,31 +1432,31 @@ public:
         return compare >= 0;
     }
 
-    operator long double() const
+    explicit operator long double() const
     {
         return mpfr_get_ld(m_val, MPFR_RNDN);
     }
-    operator double() const
+    explicit operator double() const
     {
         return mpfr_get_d(m_val, MPFR_RNDN);
     }
-    operator float() const
+    explicit operator float() const
     {
         return mpfr_get_flt(m_val, MPFR_RNDN);
     }
-    operator unsigned long() const
+    explicit operator unsigned long() const
     {
         return mpfr_get_ui(m_val, MPFR_RNDN);
     }
-    operator long() const
+    explicit operator long() const
     {
         return mpfr_get_si(m_val, MPFR_RNDN);
     }
-    operator unsigned int() const
+    explicit operator unsigned int() const
     {
         return (unsigned int)mpfr_get_ui(m_val, MPFR_RNDN);
     }
-    operator int() const
+    explicit operator int() const
     {
         return (int)mpfr_get_si(m_val, MPFR_RNDN);
     }
